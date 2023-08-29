@@ -1,20 +1,26 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import ContactItem from "./ContactItem";
 import PropTypes from "prop-types";
+import { deleteContact } from "../redux/reducer";
 
 const ContactList = ({ onDelete }) => {
   const contacts = useSelector((state) => state.contacts.contacts);
   const filter = useSelector((state) => state.contacts.filter);
+  const dispatch = useDispatch()
 
   const filteredContacts = contacts.filter((contact) =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
 
+  const handleDeleteContact = useCallback(contactId => {
+    dispatch(deleteContact(contactId));
+  }, [dispatch]);
+
   return (
     <ul>
       {filteredContacts.map((contact) => (
-        <ContactItem key={contact.id} contact={contact} onDelete={onDelete} />
+        <ContactItem key={contact.id} contact={contact} onDelete={handleDeleteContact} />
       ))}
     </ul>
   );
